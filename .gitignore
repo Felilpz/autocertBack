@@ -1,2 +1,3 @@
 myenv
-config.py
+# config.py
+.env

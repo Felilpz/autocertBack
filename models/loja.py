@@ -9,5 +9,5 @@ class Loja (db.Model):
     bandeira = db.Column(db.String(255), nullable=True)
     validade_certificado = db.Column(db.Date, nullable=True)
 
-    responsavel = db.rela(
+    responsavel = db.relationship(
         'Responsavel', secondary='loja_responsavel', back_populates='lojas')

@@ -39,7 +39,7 @@ def associar_responsavel():
     responsavel = Responsavel.query.get(responsavel_id)
 
     if loja and responsavel:
-        loja_responsavel = lojaResponsavel(  # agora usando o nome da classe importada
+        loja_responsavel = lojaResponsavel(
             loja_id=loja.id, responsavel_id=responsavel.id)
         db.session.add(loja_responsavel)
         db.session.commit()
