@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
 from models.loja import Loja
 from models.responsavel import Responsavel
-from models.loja_responsavel import lojaResponsavel
+from models.loja_responsavel import LojaResponsavel  # Corrected import
 from db.connection import db
 
 loja_routes = Blueprint('loja_routes', __name__)
@@ -39,7 +39,7 @@ def associar_responsavel():
     responsavel = Responsavel.query.get(responsavel_id)
 
     if loja and responsavel:
-        loja_responsavel = lojaResponsavel(
+        loja_responsavel = LojaResponsavel(  # Corrected object
             loja_id=loja.id, responsavel_id=responsavel.id)
         db.session.add(loja_responsavel)
         db.session.commit()
