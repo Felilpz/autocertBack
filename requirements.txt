@@ -1,0 +1,7 @@
+echo "Flask" >> requirements.txt
+echo "Flask-CORS" >> requirements.txt
+echo "SQLAlchemy" >> requirements.txt
+echo "python-dotenv" >> requirements.txt
+echo "psycopg2-binary" >> requirements.txt
+
+pip install -r requirements.txt
