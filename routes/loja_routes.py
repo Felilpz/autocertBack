@@ -15,26 +15,33 @@ def get_lojas():
         'cnpj': loja.cnpj,
         'razaosocial': loja.razaosocial,
         'bandeira': loja.bandeira,
-        'validade_certificado': loja.validade_certificado
+        'validade_certificado': loja.validade_certificado,
+        'telefone': loja.telefone,
+        'email': loja.email
     } for loja in lojas])
 
 
 @loja_routes.route('/lojas', methods=['POST'])
 def create_loja():
     data = request.get_json()
+    print(data)
 
-    if not data or 'cnpj' not in data or 'razaosocial' not in data:
-        return jsonify({'message': 'CNPJ e Razao Social são obrigatórios'}), 400
+    if not data or 'cnpj' not in data or 'razaoSocial' not in data or 'telefone' not in data or 'email' not in data:
+        return jsonify({'message': 'CNPJ, Razao Social, Telefone e Email são obrigatórios'}), 400
 
     cnpj = data['cnpj']
-    razaosocial = data['razaosocial']
+    razaosocial = data['razaoSocial']
     bandeira = data.get('bandeira')
-    validade_certificado = data.get('validade_certificado')
+    validade_certificado = None
+    telefone = data['telefone']
+    email = data['email']
 
+    meupau = 'meus ovo'
     loja = Loja(cnpj=cnpj, razaosocial=razaosocial, bandeira=bandeira,
-                validade_certificado=validade_certificado)
-
+                validade_certificado=validade_certificado, telefone=telefone, email=email)
+    print(meupau)            
     try:
+        print(loja)
         db.session.add(loja)
         db.session.commit()
         return jsonify({'message': 'loja adicionada com sucesso', 'id': loja.id}), 201

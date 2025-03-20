@@ -8,7 +8,10 @@ class Loja(db.Model):
     cnpj = db.Column(db.String(14), unique=True, nullable=False)
     razaosocial = db.Column(db.String(255), nullable=False)
     bandeira = db.Column(db.String(255), nullable=True)
-    validade_certificado = db.Column(db.Date, nullable=True)
+    validade_certificado = db.Column(db.Date, nullable=False)
+    telefone = db.Column(db.String(15), nullable=True)
+    email = db.Column(db.String(255), nullable=True)
+    
 
     # Definindo o relacionamento com Responsavel via a tabela intermediária LojaResponsavel
     responsaveis = db.relationship(
