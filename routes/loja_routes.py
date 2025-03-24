@@ -3,24 +3,26 @@ from models.loja import Loja
 from models.responsavel import Responsavel
 from models.loja_responsavel import LojaResponsavel
 from db.connection import db
+import uuid
 
 loja_routes = Blueprint('loja_routes', __name__)
 
-
+# pegar dados
 @loja_routes.route('/lojas', methods=['GET'])
 def get_lojas():
     lojas = Loja.query.all()
     return jsonify([{
-        'id': loja.id,
+        'id': str(loja.id),  # Convert UUID to string for JSON
         'cnpj': loja.cnpj,
         'razaosocial': loja.razaosocial,
         'bandeira': loja.bandeira,
         'validade_certificado': loja.validade_certificado,
         'telefone': loja.telefone,
-        'email': loja.email
+        'email': loja.email,
+        'responsavel': loja.responsavel
     } for loja in lojas])
 
-
+# enviar dados
 @loja_routes.route('/lojas', methods=['POST'])
 def create_loja():
     data = request.get_json()
@@ -35,45 +37,15 @@ def create_loja():
     validade_certificado = None
     telefone = data['telefone']
     email = data['email']
+    responsavel = data.get('responsavel')
+    
 
-    meupau = 'meus ovo'
     loja = Loja(cnpj=cnpj, razaosocial=razaosocial, bandeira=bandeira,
-                validade_certificado=validade_certificado, telefone=telefone, email=email)
-    print(meupau)            
+                validade_certificado=validade_certificado, telefone=telefone, email=email, responsavel=responsavel)
     try:
-        print(loja)
         db.session.add(loja)
         db.session.commit()
-        return jsonify({'message': 'loja adicionada com sucesso', 'id': loja.id}), 201
+        return jsonify({'message': 'loja adicionada com sucesso', 'id': str(loja.id)}), 201
     except Exception as e:
         db.session.rollback()
         return jsonify({'message': 'Erro ao adicionar loja', 'error': str(e)}), 500
-
-
-@loja_routes.route('/responsaveis', methods=['GET'])
-def get_responsaveis():
-    responsaveis = Responsavel.query.all()
-    return jsonify([{
-        'id': responsavel.id,
-        'nome': responsavel.nome,
-        'telefone': responsavel.telefone,
-        'email': responsavel.email
-    } for responsavel in responsaveis])
-
-
-@loja_routes.route('/associar_responsavel', methods=['POST'])
-def associar_responsavel():
-    loja_id = request.json.get('loja_id')
-    responsavel_id = request.json.get('responsavel_id')
-
-    loja = Loja.query.get(loja_id)
-    responsavel = Responsavel.query.get(responsavel_id)
-
-    if loja and responsavel:
-        loja_responsavel = LojaResponsavel(
-            loja_id=loja.id, responsavel_id=responsavel.id)
-        db.session.add(loja_responsavel)
-        db.session.commit()
-        return jsonify({'message': 'responsavel associado à loja com sucesso!'}), 201
-
-    return jsonify({'message': 'loja ou responsavel não encontrados!'}), 404
