@@ -8,11 +8,10 @@ app = Flask(__name__)
 
 CORS(app)
 
-# Configure the database and initialize it
-app.config.from_object(Config)
-db.init_app(app)  # Added app to db
 
-# Register the routes
+app.config.from_object(Config)
+db.init_app(app)
+
 app.register_blueprint(loja_routes)
 
 if __name__ == '__main__':

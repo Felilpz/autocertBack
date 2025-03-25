@@ -11,6 +11,7 @@ class Loja(db.Model):
     validade_certificado = db.Column(db.Date, nullable=False)
     telefone = db.Column(db.String(15), nullable=True)
     email = db.Column(db.String(255), nullable=True)
+    responsavel = db.Column(db.String(255), nullable=True)
     
 
     # Definindo o relacionamento com Responsavel via a tabela intermediária LojaResponsavel
