@@ -10,9 +10,9 @@ loja_routes = Blueprint('loja_routes', __name__)
 # pegar dados
 @loja_routes.route('/lojas', methods=['GET'])
 def get_lojas():
-    lojas = Loja.query.all()
+    lojas = Loja.query.filter_by(ativo=True).all()
     return jsonify([{
-        'id': str(loja.id),  # Convert UUID to string for JSON
+        'id': str(loja.id),
         'cnpj': loja.cnpj,
         'razaosocial': loja.razaosocial,
         'bandeira': loja.bandeira,
@@ -21,6 +21,7 @@ def get_lojas():
         'email': loja.email,
         'responsavel': loja.responsavel
     } for loja in lojas])
+
 
 # enviar dados
 @loja_routes.route('/lojas', methods=['POST'])
@@ -49,3 +50,27 @@ def create_loja():
     except Exception as e:
         db.session.rollback()
         return jsonify({'message': 'Erro ao adicionar loja', 'error': str(e)}), 500
+
+        
+
+# desativar loja
+#logica fraca, testar mais
+@loja_routes.route('/lojas/desativar', methods=['PUT'])
+def desativar_loja():
+    data = request.get_json()
+    
+    if not data or 'cnpj' not in data:
+        return jsonify({'message': 'CNPJ é obrigatório'}), 400 
+
+    loja = Loja.query.filter_by(cnpj=data['cnpj']).first()
+
+    if not loja:
+        return jsonify({'message': 'Loja não encontrada'}), 404  
+
+    loja.ativo = False  
+    try:
+        db.session.commit()
+        return jsonify({'message': 'Loja desativada com sucesso'}), 200 
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'message': 'Erro ao desativar loja', 'error': str(e)}), 500
