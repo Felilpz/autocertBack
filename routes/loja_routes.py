@@ -7,6 +7,8 @@ import uuid
 
 loja_routes = Blueprint('loja_routes', __name__)
 
+# carregar lojas
+
 
 @loja_routes.route('/lojas', methods=['GET'])
 def get_lojas():
