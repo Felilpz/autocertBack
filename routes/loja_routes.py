@@ -53,13 +53,13 @@ def create_loja():
     data = request.get_json()
     print(data)
 
-    if not data or 'cnpj' not in data or 'razaoSocial' not in data or 'telefone' not in data or 'email' not in data:
-        return jsonify({'message': 'CNPJ, Razao Social, Telefone e Email são obrigatórios'}), 400
+    if not data or 'cnpj' not in data or 'razaoSocial' not in data or 'telefone' not in data or 'email' not in data or 'validade_certificado' not in data:
+        return jsonify({'message': 'Todos os são obrigatórios'}), 400
 
     cnpj = data['cnpj']
     razaosocial = data['razaoSocial']
     bandeira = data.get('bandeira')
-    validade_certificado = None
+    validade_certificado = data.get('validade_certificado')
     telefone = data['telefone']
     email = data['email']
     responsavel = data.get('responsavel')
