@@ -4,6 +4,8 @@ from models.responsavel import Responsavel
 from models.loja_responsavel import LojaResponsavel
 from db.connection import db
 import uuid
+from datetime import datetime
+
 
 loja_routes = Blueprint('loja_routes', __name__)
 
@@ -59,10 +61,15 @@ def create_loja():
     cnpj = data['cnpj']
     razaosocial = data['razaoSocial']
     bandeira = data.get('bandeira')
-    validade_certificado = data.get('validade_certificado')
+    validade_certificado = datetime.strptime(data.get('validade_certificado'), '%d-%m-%Y')
     telefone = data['telefone']
     email = data['email']
     responsavel = data.get('responsavel')
+
+    print(validade_certificado)
+
+
+   
 
     loja = Loja(cnpj=cnpj, razaosocial=razaosocial, bandeira=bandeira,
                 validade_certificado=validade_certificado, telefone=telefone, email=email, responsavel=responsavel)
