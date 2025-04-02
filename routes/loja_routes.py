@@ -95,3 +95,5 @@ def desativar_loja():
     except Exception as e:
         db.session.rollback()
         return jsonify({'message': 'Erro ao desativar loja', 'error': str(e)}), 500
+
+
