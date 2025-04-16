@@ -9,6 +9,8 @@ from datetime import datetime
 loja_routes = Blueprint('loja_routes', __name__)
 
 # carregar lojas
+
+
 @loja_routes.route('/lojas', methods=['GET'])
 def get_lojas():
     lojas = Loja.query.filter_by(ativo=True).all()
@@ -44,6 +46,8 @@ def get_loja_by_cnpj(cnpj):
         return jsonify({'message': 'Loja não encontrada'}), 404
 
 # enviar dados
+
+
 @loja_routes.route('/lojas', methods=['POST'])
 def create_loja():
     data = request.get_json()
@@ -55,7 +59,8 @@ def create_loja():
     cnpj = data['cnpj']
     razaosocial = data['razaoSocial']
     bandeira = data.get('bandeira')
-    validade_certificado = datetime.strptime(data.get('validade_certificado'), '%d-%m-%Y')
+    validade_certificado = datetime.strptime(
+        data.get('validade_certificado'), '%d-%m-%Y')
     telefone = data['telefone']
     email = data['email']
     responsavel = data.get('responsavel')
@@ -95,21 +100,24 @@ def desativar_loja():
         return jsonify({'message': 'Erro ao desativar loja', 'error': str(e)}), 500
 
 # Atualizar loja por CNPJ
+
+
 @loja_routes.route('/lojas/<string:cnpj>', methods=['PUT'])
 def update_loja(cnpj):
     data = request.get_json()
-    
+
     loja = Loja.query.filter_by(cnpj=cnpj).first()
     if not loja:
         return jsonify({'message': 'Loja não encontrada'}), 404
-    
+
     if 'razaosocial' in data:
         loja.razaosocial = data['razaosocial']
     if 'bandeira' in data:
         loja.bandeira = data['bandeira']
     if 'validade_certificado' in data:
         try:
-            loja.validade_certificado = datetime.strptime(data['validade_certificado'], '%Y-%m-%d')
+            loja.validade_certificado = datetime.strptime(
+                data['validade_certificado'], '%Y-%m-%d')
         except ValueError:
             return jsonify({'message': 'Formato de data inválido. Use YYYY-MM-DD'}), 400
     if 'telefone' in data:
@@ -118,20 +126,20 @@ def update_loja(cnpj):
         loja.email = data['email']
     if 'responsavel' in data:
         loja.responsavel = data['responsavel']
-    
+        novo_cnpj = cnpj  # Valor padrão
+
     if 'cnpj' in data and data['cnpj'] != cnpj:
         novo_cnpj = data['cnpj']
         print(f"Tentando alterar CNPJ de {cnpj} para {novo_cnpj}")
-    
 
-    loja_existente = Loja.query.filter_by(cnpj=novo_cnpj).first()
-    if loja_existente:
-        print(f"Já existe uma loja com CNPJ {novo_cnpj}")
-        return jsonify({'message': 'Já existe uma loja com este CNPJ'}), 409
+        loja_existente = Loja.query.filter_by(cnpj=novo_cnpj).first()
+        if loja_existente:
+            print(f"Já existe uma loja com CNPJ {novo_cnpj}")
+            return jsonify({'message': 'Já existe uma loja com este CNPJ'}), 409
 
-    print(f"Atualizando CNPJ para {novo_cnpj}")
-    loja.cnpj = novo_cnpj
-    
+        print(f"Atualizando CNPJ para {novo_cnpj}")
+        loja.cnpj = novo_cnpj
+
     try:
         db.session.commit()
         return jsonify({
