@@ -12,8 +12,10 @@ loja_routes = Blueprint('loja_routes', __name__)
 
 
 @loja_routes.route('/lojas', methods=['GET'])
+@loja_routes.route('/lojas', methods=['GET'])
 def get_lojas():
-    lojas = Loja.query.filter_by(ativo=True).all()
+    # Ordena as lojas pela data de validade do certificado (crescente)
+    lojas = Loja.query.filter_by(ativo=True).order_by(Loja.validade_certificado).all()
     return jsonify([{
         'id': str(loja.id),
         'cnpj': loja.cnpj,
@@ -126,7 +128,7 @@ def update_loja(cnpj):
         loja.email = data['email']
     if 'responsavel' in data:
         loja.responsavel = data['responsavel']
-        novo_cnpj = cnpj  # Valor padrão
+        novo_cnpj = cnpj
 
     if 'cnpj' in data and data['cnpj'] != cnpj:
         novo_cnpj = data['cnpj']
@@ -139,6 +141,7 @@ def update_loja(cnpj):
 
         print(f"Atualizando CNPJ para {novo_cnpj}")
         loja.cnpj = novo_cnpj
+        print(loja.validade_certificado)
 
     try:
         db.session.commit()
