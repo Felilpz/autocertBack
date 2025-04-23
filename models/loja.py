@@ -13,8 +13,3 @@ class Loja(db.Model):
     email = db.Column(db.String(100), nullable=False)
     responsavel = db.Column(db.String(255))
     ativo = db.Column(db.Boolean, default=True)
-    
-
-    # Definindo o relacionamento com Responsavel via a tabela intermediária LojaResponsavel
-    responsaveis = db.relationship(
-        'Responsavel', secondary='loja_responsavel', back_populates='lojas')

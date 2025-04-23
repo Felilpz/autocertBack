@@ -1,7 +1,5 @@
 from flask import Blueprint, jsonify, request
 from models.loja import Loja
-from models.responsavel import Responsavel
-from models.loja_responsavel import LojaResponsavel
 from db.connection import db
 import uuid
 from datetime import datetime
@@ -15,7 +13,8 @@ loja_routes = Blueprint('loja_routes', __name__)
 @loja_routes.route('/lojas', methods=['GET'])
 def get_lojas():
     # Ordena as lojas pela data de validade do certificado (crescente)
-    lojas = Loja.query.filter_by(ativo=True).order_by(Loja.validade_certificado).all()
+    lojas = Loja.query.filter_by(ativo=True).order_by(
+        Loja.validade_certificado).all()
     return jsonify([{
         'id': str(loja.id),
         'cnpj': loja.cnpj,
@@ -71,6 +70,14 @@ def create_loja():
 
     loja = Loja(cnpj=cnpj, razaosocial=razaosocial, bandeira=bandeira,
                 validade_certificado=validade_certificado, telefone=telefone, email=email, responsavel=responsavel)
+    cnpjExistente = Loja.query.filter_by(cnpj=cnpj).first()
+    if cnpjExistente:
+        return jsonify({
+            'message': 'CNPJ Já Cadastrado',
+            'status': 'Loja Ativa' if cnpjExistente.ativo else 'Loja Inativa',
+            'cnpj': cnpjExistente.cnpj
+        }), 409
+    
     try:
         db.session.add(loja)
         db.session.commit()
