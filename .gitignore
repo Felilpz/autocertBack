@@ -1,3 +1,6 @@
 myenv
 # config.py
 .env
+.pyc
+__pycache__/
+__pycache__
