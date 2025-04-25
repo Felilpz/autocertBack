@@ -161,3 +161,16 @@ def update_loja(cnpj):
     except Exception as e:
         db.session.rollback()
         return jsonify({'message': 'Erro ao atualizar loja', 'error': str(e)}), 500
+
+@loja_routes.route('/responsaveis', methods=['GET'])
+def get_responsaveis():
+    try:
+        # Busca todos os responsáveis distintos das lojas ativas
+        responsaveis = db.session.query(Loja.responsavel).filter_by(ativo=True).distinct().all()
+        
+        # Filtra valores None e transforma a lista de tuplas em lista simples
+        responsaveis_lista = [r[0] for r in responsaveis if r[0]]
+        
+        return jsonify(responsaveis_lista), 200
+    except Exception as e:
+        return jsonify({'message': 'Erro ao carregar responsáveis', 'error': str(e)}), 500
