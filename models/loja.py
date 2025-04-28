@@ -13,3 +13,5 @@ class Loja(db.Model):
     email = db.Column(db.String(100), nullable=False)
     responsavel = db.Column(db.String(255))
     ativo = db.Column(db.Boolean, default=True)
+    notificacao = db.Column(db.Boolean, default=False)
+    

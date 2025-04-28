@@ -5,11 +5,11 @@ import openpyxl
 arquivo = 'xxx.xlsx'
 tabela = 'lojas'
 DB_CONFIG = {
-    'host': 'x',
-    'port': x,
-    'dbname': 'x',
-    'user': 'x',
-    'password': 'x'
+    'host': 'localhost',
+    'port': 5432,
+    'dbname': 'autocert',
+    'user': 'postgres',
+    'password': 'craniovaldo1'
 }
 
 df = pd.read_excel(arquivo, dtype={'cnpj': str, 'telefone': str})

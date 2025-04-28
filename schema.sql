@@ -9,7 +9,9 @@ create table if not exists lojas (
     telefone varchar(20) not null,
     email varchar(100) not null,
     responsavel varchar(255) not null,
-    ativo boolean not null
+    ativo boolean not null,
+    notificacao boolean not null default false
+    -- adicionar created_at e updated_at posteriormente
 );
 
 create table if not exists responsaveis (
