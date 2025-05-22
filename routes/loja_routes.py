@@ -7,6 +7,8 @@ from datetime import datetime
 loja_routes = Blueprint('loja_routes', __name__)
 
 # carregar lofjas
+
+
 @loja_routes.route('/lojas', methods=['GET'])
 def get_lojas():
     lojas = Loja.query.filter_by(ativo=True).order_by(
@@ -46,6 +48,8 @@ def get_loja_by_cnpj(cnpj):
         return jsonify({'message': 'Loja não encontrada'}), 404
 
 # criar loja
+
+
 @loja_routes.route('/lojas', methods=['POST'])
 def create_loja():
     data = request.get_json()
@@ -55,10 +59,10 @@ def create_loja():
         return jsonify({'message': 'Todos os são obrigatórios'}), 400
 
     cnpj = data['cnpj']
-    razaosocial = data['razaoSocial']
+    razaosocial = data['razaosocial']
     bandeira = data.get('bandeira')
     validade_certificado = datetime.strptime(
-        data.get('validade_certificado'), '%d-%m-%Y')
+        data.get('validade_certificado'), '%Y-%m-%d')
 
     telefone = data['telefone']
     email = data['email']
@@ -108,6 +112,8 @@ def desativar_loja():
         return jsonify({'message': 'Erro ao desativar loja', 'error': str(e)}), 500
 
 # atualizar loja por CNPJ
+
+
 @loja_routes.route('/lojas/<string:cnpj>', methods=['PUT'])
 def update_loja(cnpj):
     data = request.get_json()
@@ -132,7 +138,7 @@ def update_loja(cnpj):
         loja.email = data['email']
     if 'responsavel' in data:
         loja.responsavel = data['responsavel']
-    
+
     if 'notificacao' in data:
         loja.notificacao = data['notificacao']
         novo_cnpj = cnpj
@@ -167,25 +173,25 @@ def get_responsaveis():
     try:
         responsaveis = db.session.query(
             Loja.responsavel).filter_by(ativo=True).distinct().all()
-        
+
         responsaveis_lista = [r[0] for r in responsaveis if r[0]]
 
         return jsonify(responsaveis_lista), 200
     except Exception as e:
         return jsonify({'message': 'Erro ao carregar responsáveis', 'error': str(e)}), 500
-    
+
 
 @loja_routes.route('/lojas/<string:cnpj>/notificar', methods=['PUT'])
 def notificar_loja(cnpj):
     data = request.get_json()
-    
+
     loja = Loja.query.filter_by(cnpj=cnpj).first()
     if not loja:
         return jsonify({'message': 'Loja não encontrada'}), 404
-    
+
     if 'notificacao' in data:
         loja.notificacao = data['notificacao']
-    
+
     try:
         db.session.commit()
         return jsonify({

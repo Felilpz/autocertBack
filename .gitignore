@@ -1,4 +1,5 @@
 myenv
+venv
 # config.py
 .env
 .pyc
